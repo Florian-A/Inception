@@ -1,0 +1,139 @@
+version: '3'
+services:
+  nginx_proxy:
+    build:
+      context: ./requirements/nginx_proxy
+    container_name: nginx_proxy
+    restart: always
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    volumes:
+      - wordpress:/var/www/localhost/:rw
+      - adminer:/var/www/adminer/:rw
+    networks:
+      - inception_network
+  nginx_static:
+    build:
+      context: ./bonus/nginx_static
+    container_name: nginx_static
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - inception_network
+  php_wordpress:
+    build:
+      context: ./requirements/php_wordpress
+      args:
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+      - DB_HOST
+      - WP_URL
+      - WP_TITLE
+      - WP_SUPERADMIN_USER
+      - WP_SUPERADMIN_EMAIL
+      - WP_SUPERADMIN_PASSWORD
+      - WP_ADMIN_USER
+      - WP_ADMIN_EMAIL
+      - WP_ADMIN_PASSWORD
+      - REDIS_PASSWORD
+    container_name: php_wordpress
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+      - redis
+    volumes:
+      - wordpress:/var/www/localhost/:rw
+    networks:
+      - inception_network
+  php_adminer:
+    build:
+      context: ./bonus/php_adminer
+    container_name: php_adminer
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    volumes:
+      - adminer:/var/www/adminer/:rw
+    networks:
+      - inception_network
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      args:
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+      - DB_ROOT_PASSWORD
+    container_name: mariadb
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - mariadb:/var/lib/mysql/:rw
+    networks:
+      - inception_network
+  redis:
+    build:
+      context: ./bonus/redis
+      args:
+      - REDIS_PASSWORD
+    container_name: redis
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - inception_network
+  proftpd:
+    build:
+      context: ./bonus/proftpd
+      args:
+      - FTP_USER
+      - FTP_PASSWORD
+    container_name: proftpd
+    restart: always
+    ports:
+      - "21:21"
+      - "50150-50250:50150-50250"
+    env_file:
+      - .env
+    volumes:
+      - wordpress:/var/www/localhost/:rw
+    networks:
+      - inception_network
+  minecraft:
+    build:
+      context: ./bonus/minecraft
+    container_name: minecraft
+    restart: always
+    ports:
+      - "25565:25565"
+    env_file:
+      - .env
+    networks:
+      - inception_network
+volumes:
+  wordpress:
+    driver_opts:
+      device: /home/${USER}/data/wordpress
+      type: none
+      o: bind
+  adminer:
+    driver_opts:
+      device: /home/${USER}/data/adminer
+      type: none
+      o: bind
+  mariadb:
+    driver_opts:
+      device: /home/${USER}/data/mariadb
+      type: none
+      o: bind
+networks:
+  inception_network:

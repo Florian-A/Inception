@@ -1,0 +1,38 @@
+# Localhost config
+server {
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+        server_name localhost;
+
+        ssl_certificate /etc/ssl/certs/localhost.crt;
+        ssl_certificate_key /etc/ssl/private/localhost.key;
+
+        root /var/www/localhost;
+        index index.php index.html index.htm;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+        location /jsrassik/ {
+                proxy_pass https://nginx_static/;
+        }
+        location /adminer/ {
+                root /var/www/;
+                index index.php;
+                try_files $uri $uri/ /adminer/index.php?$args;
+
+                location ~ \.php$ {
+                include fastcgi_params;
+                fastcgi_pass php_adminer:9000;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                }
+        }
+        location ~ \.php$ {
+                include fastcgi_params;
+                fastcgi_pass php_wordpress:9000;
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
+
+        ssl_protocols TLSv1.2;
+}
