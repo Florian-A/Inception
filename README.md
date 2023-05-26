@@ -1,6 +1,6 @@
 <h1 align="center">Inception</h1>
 
-Deuxième projet de [42](https://42.fr/), il est question de mettre en place une petite infrastructure avec plusieurs services grace à Docker.
+Douzième projet de [42](https://42.fr/), il est question de mettre en place une petite infrastructure avec plusieurs services grace à Docker.
 
 Les concepts abordés sont :
 
@@ -22,9 +22,13 @@ Pour lancer le projet, utiliser la commande suivante :
 make
 ```
 
-### Utilisation :
+### Services disponibles :
 
-WIP
+- WordPress : https://login.42.fr
+- Adminer : https://login.42.fr/adminer/
+- JSrassiK : https://login.42.fr/jsrassik/
+- FTP : ssh://login.42.fr/
+- Minecraft : login.42.fr
 
 ### Démonstration :
 
