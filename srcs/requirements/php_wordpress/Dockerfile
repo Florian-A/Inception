@@ -35,11 +35,11 @@ RUN echo "extension=imagick.so" >> /etc/php/7.3/cli/php.ini;
 # Install wp-cli
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar;
 RUN chmod +x wp-cli.phar;
-RUN mv wp-cli.phar /usr/local/bin/wp;
-RUN wp core download --allow-root --path=/tmp/wordpress;
+RUN mv wp-cli.phar /usr/local/bin/wp-cli.phar;
+RUN wp-cli.phar core download --allow-root --path=/tmp/wordpress;
 
+RUN mkdir -p /var/www/localhost;
 COPY ./media/image1.jpg /var/www/localhost/image1.jpg
-
 RUN chown -R www-data:www-data /var/www/localhost;
 RUN chmod -R 755 /var/www/localhost;
 
