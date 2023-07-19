@@ -122,17 +122,17 @@ services:
 volumes:
   wordpress:
     driver_opts:
-      device: /home/${USER}/data/wordpress
+      device: /${HOME}/data/wordpress
       type: none
       o: bind
   adminer:
     driver_opts:
-      device: /home/${USER}/data/adminer
+      device: /${HOME}/data/adminer
       type: none
       o: bind
   mariadb:
     driver_opts:
-      device: /home/${USER}/data/mariadb
+      device: /${HOME}/data/mariadb
       type: none
       o: bind
 networks:

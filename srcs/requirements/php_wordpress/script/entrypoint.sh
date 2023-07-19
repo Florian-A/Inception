@@ -20,7 +20,7 @@ if [ ! -f "/var/www/localhost/wp-config.php" ]; then
     cp -R /tmp/wordpress/* /var/www/localhost/;
 
     # Create wp-config.php file with database informations
-    wp config create \
+    wp-cli.phar config create \
     --dbname=$DB_NAME \
     --dbuser=$DB_USER \
     --dbpass=$DB_PASSWORD \
@@ -30,7 +30,7 @@ if [ ! -f "/var/www/localhost/wp-config.php" ]; then
     --allow-root;
 
     # Install wordpress and add superadmin user
-    wp core install \
+    wp-cli.phar core install \
     --url=$WP_URL \
     --title=$WP_TITLE \
     --admin_user=$WP_SUPERADMIN_USER \
@@ -40,47 +40,47 @@ if [ ! -f "/var/www/localhost/wp-config.php" ]; then
     --allow-root ;
 
     # Create admin user
-    wp user create $WP_ADMIN_USER $WP_ADMIN_EMAIL \
+    wp-cli.phar user create $WP_ADMIN_USER $WP_ADMIN_EMAIL \
     --user_pass=$WP_ADMIN_PASSWORD \
     --role=administrator \
     --path=/var/www/localhost/ \
     --allow-root ;
 
     # Install Redis Object Cache plugin
-    wp config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" WP_REDIS_HOST redis
-    wp config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_PASSWORD $REDIS_PASSWORD
-    wp config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_PORT 6379
-    wp config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_TIMEOUT 1
-    wp config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_READ_TIMEOUT 1
-    wp config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_DATABASE 0
+    wp-cli.phar config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" WP_REDIS_HOST redis
+    wp-cli.phar config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_PASSWORD $REDIS_PASSWORD
+    wp-cli.phar config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_PORT 6379
+    wp-cli.phar config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_TIMEOUT 1
+    wp-cli.phar config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_READ_TIMEOUT 1
+    wp-cli.phar config set --allow-root --path=/var/www/localhost --anchor="/**#@+" --separator="\n\n" --raw WP_REDIS_DATABASE 0
 
-    wp plugin install redis-cache \
+    wp-cli.phar plugin install redis-cache \
     --activate \
     --path=/var/www/localhost/ \
     --allow-root ;
 
-    wp redis enable \
+    wp-cli.phar redis enable \
     --path=/var/www/localhost/ \
     --allow-root ;
 
     # Install twentytwenty theme
-    wp theme install twentytwenty \
+    wp-cli.phar theme install twentytwenty \
     --activate \
     --path=/var/www/localhost/ \
     --allow-root ;
 
     # Delete all posts and pages
-    wp post delete $(wp post list --posts_per_page=1 --format=ids --allow-root --path=/var/www/localhost/) --allow-root --path=/var/www/localhost/;
-    wp post delete $(wp post list --post_type=page --format=ids --allow-root --path=/var/www/localhost/) --allow-root --path=/var/www/localhost/;
+    wp-cli.phar post delete $(wp-cli.phar post list --posts_per_page=1 --format=ids --allow-root --path=/var/www/localhost/) --allow-root --path=/var/www/localhost/;
+    wp-cli.phar post delete $(wp-cli.phar post list --post_type=page --format=ids --allow-root --path=/var/www/localhost/) --allow-root --path=/var/www/localhost/;
 
     # Delete all widgets
-    wp widget reset --all --allow-root --path=/var/www/localhost/;
+    wp-cli.phar widget reset --all --allow-root --path=/var/www/localhost/;
 
     # Disable comments
-    wp option set default_comment_status closed --allow-root --path=/var/www/localhost/;
+    wp-cli.phar option set default_comment_status closed --allow-root --path=/var/www/localhost/;
 
     # Create new funny post
-    wp post create --post_type='post' --post_status=publish --post_title='Pourquoi je mérite un outstanding project !' --post_content="Je suis fier de vous présenter mon projet, qui selon moi mérite d'être récompensé avec un 'outstanding project'.
+    wp-cli.phar post create --post_type='post' --post_status=publish --post_title='Pourquoi je mérite un outstanding project !' --post_content="Je suis fier de vous présenter mon projet, qui selon moi mérite d'être récompensé avec un 'outstanding project'.
     
 J'ai travaillé dur pour réaliser ce projet et j'ai également réalisé les bonus proposés, ce qui a demandé encore plus de temps et d'efforts.
 
@@ -93,8 +93,8 @@ Enfin, je tiens à vous rappeler que j'ai réalisé tous les bonus proposés, ce
 En somme, je pense que mon projet mérite vraiment d'être récompensé avec un 'outstanding project'." --post_thumbnail_id=7 --post_author=2 --path=/var/www/localhost/ --allow-root;
 
     # Add image to new post
-    wp media import /var/www/localhost/image1.jpg --title="Image 1" --post_id=7 --allow-root --path=/var/www/localhost/
-    wp post meta set 7 _thumbnail_id 8 --allow-root --path=/var/www/localhost/;
+    wp-cli.phar media import /var/www/localhost/image1.jpg --title="Image 1" --post_id=7 --allow-root --path=/var/www/localhost/
+    wp-cli.phar post meta set 7 _thumbnail_id 8 --allow-root --path=/var/www/localhost/;
 
     # Change owner of wordpress files
     chown -R www-data:www-data /var/www/localhost;
